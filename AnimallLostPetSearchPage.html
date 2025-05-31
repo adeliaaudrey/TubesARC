@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animall - Lost Pet Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            position: relative;
+            width: 1440px;
+            height: 1024px;
+            background-color: #ffffff;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1440px;
+            height: 1954px;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1440px;
+            height: 1024px;
+            z-index: 2;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1440px;
+            height: 108px;
+            background-color: #ff9f00;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 0px 0px 10px 10px;
+            z-index: 100;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1440px;
+            height: 108px;
+            border-radius: 0px 0px 10px 10px;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 13px;
+            left: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 71px;
+            height: 71px;
+        }
+
+        .logo-text {
+            font-size: 37px;
+            font-family: 'CITCAT', cursive;
+            font-weight: 400;
+            line-height: 55px;
+            color: #fff8f0;
+        }
+
+        .nav-menu {
+            position: absolute;
+            top: 23px;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding-right: 30px;
+        }
+
+        .nav-item {
+            font-size: 37px;
+            font-family: 'Abhaya Libre', serif;
+            font-weight: 400;
+            line-height: 44px;
+            color: #fff8f0;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item:hover {
+            opacity: 0.8;
+        }
+
+        .nav-item.active {
+            background-color: #d9d9d9;
+            color: #fff8f0;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .nav-item.about {
+            font-weight: 700;
+        }
+
+        .search-container {
+            position: absolute;
+            top: 116px;
+            left: 357px;
+            width: 1083px;
+            height: 57px;
+            z-index: 50;
+        }
+
+        .search-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1083px;
+            height: 57px;
+            border-radius: 28px;
+        }
+
+        .search-input {
+            position: absolute;
+            top: 13px;
+            left: 30px;
+            width: 461px;
+            height: 40px;
+            font-size: 24px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            line-height: 36px;
+            color: rgba(17, 42, 64, 0.5);
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(17, 42, 64, 0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 5px;
+            right: 0;
+            width: 43px;
+            height: 47px;
+            cursor: pointer;
+        }
+
+        .filter-tabs {
+            position: absolute;
+            top: 187px;
+            left: 51px;
+            display: flex;
+            gap: 28px;
+            z-index: 50;
+        }
+
+        .filter-tab {
+            width: 247px;
+            height: 39px;
+            border: 1px solid #000000;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background-color: #ff9f00;
+        }
+
+        .filter-tab-text {
+            font-size: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            line-height: 30px;
+            color: #000000;
+        }
+
+        .filter-tab:not(.active) .filter-tab-text {
+            color: #ffffff;
+        }
+
+        .pet-grid {
+            position: absolute;
+            top: 247px;
+            left: 56px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 44px;
+            z-index: 50;
+        }
+
+        .pet-card {
+            width: 361px;
+            background-color: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0px 0px 50px rgba(89, 0, 0, 0.3);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 5px 60px rgba(89, 0, 0, 0.4);
+        }
+
+        .pet-card.tall {
+            height: 275px;
+        }
+
+        .pet-card.normal {
+            height: 271px;
+        }
+
+        .pet-image {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+        }
+
+        .pet-info {
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: -25px;
+            left: 20px;
+            background-color: #ff9f00;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        .pet-name {
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            line-height: 21px;
+            color: #000000;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .pet-location {
+            font-size: 11px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            line-height: 16px;
+            color: #271f50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .divider {
+            width: 167px;
+            height: 1px;
+            background-color: #000000;
+            margin: 5px auto;
+        }
+
+        .pet-details {
+            font-size: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            line-height: 12px;
+            color: rgba(40, 31, 80, 0.9);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 35px;
+            height: 18px;
+            border: 1px solid #000000;
+            border-radius: 9px;
+            background-color: transparent;
+        }
+
+        .side-image {
+            position: absolute;
+            top: 108px;
+            right: 0;
+            width: 21px;
+            height: 916px;
+            z-index: 10;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                width: 100%;
+                max-width: 1200px;
+            }
+
+            .pet-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+
+            .search-container {
+                width: 80%;
+                left: 10%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 10px;
+                top: 80px;
+                right: 10px;
+            }
+
+            .nav-item {
+                font-size: 24px;
+            }
+
+            .pet-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                left: 20px;
+            }
+
+            .filter-tabs {
+                flex-direction: column;
+                gap: 15px;
+                left: 20px;
+            }
+
+            .filter-tab {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pet-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .pet-card {
+                width: 90%;
+                margin: 0 auto;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+
+            .nav-item {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Background Images -->
+        <img src="../assets/images/img_image_1.png" alt="Background" class="background-image">
+        <img src="../assets/images/img_rectangle_4.png" alt="Background Overlay" class="background-overlay">
+        
+        <!-- Header -->
+        <header class="header">
+            <img src="../assets/images/img_rectangle.png" alt="Header Background" class="header-background">
+            
+            <div class="logo-container">
+                <img src="../assets/images/img_group.svg" alt="Animall Logo" class="logo-icon">
+                <h1 class="logo-text">Anim'all</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">Home</a>
+                <a href="#" class="nav-item">Add Case</a>
+                <a href="#" class="nav-item">Update Case</a>
+                <a href="#" class="nav-item">Close Case</a>
+                <a href="#" class="nav-item">FAQ</a>
+                <a href="#" class="nav-item about">About Us</a>
+            </nav>
+        </header>
+        
+        <!-- Search Container -->
+        <div class="search-container">
+            <img src="../assets/images/img_rectangle_blue_gray_50.png" alt="Search Background" class="search-background">
+            <input type="text" class="search-input" placeholder="Cari hewan kamu yang hilang disini" id="searchInput">
+            <img src="../assets/images/img_groupe_3_4.svg" alt="Search Icon" class="search-icon" onclick="performSearch()">
+        </div>
+        
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <div class="filter-tab active" onclick="filterPets('lost')">
+                <span class="filter-tab-text">Lost</span>
+            </div>
+            <div class="filter-tab" onclick="filterPets('found')">
+                <span class="filter-tab-text">Found</span>
+            </div>
+            <div class="filter-tab" onclick="filterPets('returned')">
+                <span class="filter-tab-text">Returned</span>
+            </div>
+        </div>
+        
+        <!-- Pet Grid -->
+        <div class="pet-grid">
+            <!-- Pet Card 1 - Kucing -->
+            <div class="pet-card normal" data-category="lost">
+                <div class="toggle-icon"></div>
+                <img src="../assets/images/img_kucing.png" alt="Lost Cat" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Kucing</div>
+                    <div class="pet-location">Terakhir ditemukan di GKU 1</div>
+                    <div class="divider"></div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 2 - Bebek -->
+            <div class="pet-card normal" data-category="lost">
+                <img src="../assets/images/img_image_9.png" alt="Lost Duck" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Bebek</div>
+                    <div class="pet-location">Terakhir ditemukan di Gedung A</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                    <div class="pet-details">Tanggal hilang: 29 Mei 2025<br>Alamat pemilik: Jl. Sayang No.7<br>Kontak: 0811-3333-7878<br>Deskripsi: Bebek berbulu kuning</div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 3 - Ayam -->
+            <div class="pet-card normal" data-category="lost">
+                <img src="../assets/images/img_ayam.png" alt="Lost Chicken" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Ayam</div>
+                    <div class="pet-location">Terakhir ditemukan di Gedung B</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                    <div class="pet-details">Tanggal hilang: 29 Mei 2025<br>Alamat pemilik: Jl. Caringin No.15<br>Kontak: 0822-4444-8989<br>Deskripsi: Ayam berbulu kuning</div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 4 - Kucing 2 -->
+            <div class="pet-card tall" data-category="lost">
+                <img src="../assets/images/img_image_14.png" alt="Lost Cat 2" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Kucing</div>
+                    <div class="pet-location">Terakhir ditemukan di GKU 2</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                    <div class="pet-details">Tanggal hilang: 30 Mei 2025<br>Alamat pemilik: Jl. Ciseke No. 3<br>Kontak: 0878-8888-4000<br>Deskripsi: Kucing berbulu cokelat</div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 5 - Burung -->
+            <div class="pet-card normal" data-category="lost">
+                <img src="../assets/images/img_image_15.png" alt="Lost Bird" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Burung</div>
+                    <div class="pet-location">Terakhir ditemukan di GKU 3</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 6 - Ikan -->
+            <div class="pet-card normal" data-category="lost">
+                <img src="../assets/images/img_image_16.png" alt="Lost Fish" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Ikan</div>
+                    <div class="pet-location">Terakhir ditemukan di Labtek 1a</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 7 - Tupai -->
+            <div class="pet-card normal" data-category="lost">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Tupai</div>
+                    <div class="pet-location">Terakhir ditemukan di Kantin</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                </div>
+            </div>
+            
+            <!-- Pet Card 8 - Landak -->
+            <div class="pet-card tall" data-category="lost">
+                <img src="../assets/images/img_image_18.png" alt="Lost Hedgehog" class="pet-image">
+                <div class="pet-info">
+                    <div class="status-badge">Lost Landak</div>
+                    <div class="pet-location">Terakhir ditemukan di Asrama</div>
+                    <div class="divider"></div>
+                    <div class="divider"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Side Image -->
+        <img src="../assets/images/img_image_19.png" alt="Side Decoration" class="side-image">
+    </div>
+    
+    <script>
+        // Search functionality
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const petCards = document.querySelectorAll('.pet-card');
+            
+            petCards.forEach(card => {
+                const petName = card.querySelector('.status-badge').textContent.toLowerCase();
+                const petLocation = card.querySelector('.pet-location').textContent.toLowerCase();
+                
+                if (petName.includes(searchTerm) || petLocation.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = searchTerm === '' ? 'block' : 'none';
+                }
+            });
+        }
+        
+        // Filter functionality
+        function filterPets(category) {
+            const tabs = document.querySelectorAll('.filter-tab');
+            const petCards = document.querySelectorAll('.pet-card');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.closest('.filter-tab').classList.add('active');
+            
+            // Show/hide pets based on category
+            petCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === 'lost' || cardCategory === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Simulate navigation
+                const page = this.textContent.trim();
+                console.log(`Navigating to ${page} page`);
+                
+                // You can add actual navigation logic here
+                if (page === 'Add Case') {
+                    alert('Redirecting to Add Case page...');
+                } else if (page === 'Update Case') {
+                    alert('Redirecting to Update Case page...');
+                } else if (page === 'Close Case') {
+                    alert('Redirecting to Close Case page...');
+                } else if (page === 'FAQ') {
+                    alert('Redirecting to FAQ page...');
+                } else if (page === 'About Us') {
+                    alert('Redirecting to About Us page...');
+                }
+            });
+        });
+        
+        // Pet card click functionality
+        document.querySelectorAll('.pet-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const petName = this.querySelector('.status-badge').textContent;
+                const petLocation = this.querySelector('.pet-location').textContent;
+                
+                alert(`Viewing details for ${petName}\
+${petLocation}`);
+                
+                // You can add modal or detailed view functionality here
+            });
+        });
+        
+        // Search input event listener
+        document.getElementById('searchInput').addEventListener('input', performSearch);
+        
+        // Search input enter key functionality
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Animall Lost Pet Search page loaded successfully');
+            
+            // Set default filter to Lost
+            filterPets('lost');
+        });
+    </script>
+</body>
+</html>
